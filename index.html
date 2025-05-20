@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>مؤقت بومودورو</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(135deg, #74ebd5, #9face6);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      direction: rtl;
+    }
+
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 320px;
+      transition: 0.3s;
+    }
+
+    h1 {
+      margin-bottom: 25px;
+      color: #333;
+      font-size: 26px;
+    }
+
+    #timer {
+      font-size: 64px;
+      color: #007BFF;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button.start {
+      background-color: #28a745;
+      color: white;
+    }
+
+    button.reset {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    #status {
+      font-size: 18px;
+      color: #555;
+      margin-top: 10px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>مؤقت بومودورو</h1>
+    <div id="timer">25:00</div>
+    <div class="buttons">
+      <button class="start" onclick="startPomodoro()">ابدأ</button>
+      <button class="reset" onclick="resetTimer()">إعادة</button>
+    </div>
+    <div id="status">جاهز للعمل 💼</div>
+  </div>
+
+  <script>
+    let isWorkTime = true;
+    let workMinutes = 25;
+    let breakMinutes = 5;
+    let seconds = 0;
+    let minutes = workMinutes;
+    let interval;
+
+    const timerDisplay = document.getElementById("timer");
+    const statusDisplay = document.getElementById("status");
+
+    function updateDisplay() {
+      let min = minutes.toString().padStart(2, "0");
+      let sec = seconds.toString().padStart(2, "0");
+      timerDisplay.textContent = `${min}:${sec}`;
+    }
+
+    function startPomodoro() {
+      if (interval) return;
+
+      statusDisplay.textContent = isWorkTime ? "💼 وقت العمل" : "☕ وقت الراحة";
+      interval = setInterval(() => {
+        if (seconds === 0) {
+          if (minutes === 0) {
+            clearInterval(interval);
+            interval = null;
+            isWorkTime = !isWorkTime;
+            minutes = isWorkTime ? workMinutes : breakMinutes;
+            seconds = 0;
+            alert(isWorkTime ? "انتهت الراحة، حان وقت العمل!" : "انتهى وقت العمل! خذ راحة.");
+            updateDisplay();
+            startPomodoro();
+          } else {
+            minutes--;
+            seconds = 59;
+          }
+        } else {
+          seconds--;
+        }
+        updateDisplay();
+      }, 1000);
+    }
+
+    function resetTimer() {
+      clearInterval(interval);
+      interval = null;
+      isWorkTime = true;
+      minutes = workMinutes;
+      seconds = 0;
+      updateDisplay();
+      statusDisplay.textContent = "جاهز للعمل 💼";
+    }
+
+    updateDisplay();
+  </script>
+
+</body>
+</html>
+
